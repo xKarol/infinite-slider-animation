@@ -31,7 +31,7 @@ function animation() {
       if (progress > 0) progress = -maxProgress;
       break;
   }
-  moveContainerElement.style.transform = `translate(0, ${progress}px)`;
+  moveContainerElement.style.transform = `translateY(${progress}px)`;
 }
 
 setInterval(() => window.requestAnimationFrame(animation), 5);
