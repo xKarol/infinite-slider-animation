@@ -21,17 +21,13 @@ if (direction === "down") {
 }
 
 function animation() {
-  if (direction === "up") {
-    progress--;
-  } else {
-    progress++;
-  }
-
   switch (direction) {
     case "up":
+      progress--;
       if (progress < -maxProgress) progress = 0;
       break;
     case "down":
+      progress++;
       if (progress > 0) progress = -maxProgress;
       break;
   }
