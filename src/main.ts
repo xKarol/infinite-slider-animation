@@ -10,7 +10,7 @@ new InfiniteSlider({
   rootElement: document.querySelector<HTMLDivElement>("#col1")!,
   direction: "down",
   gap: 16,
-  speed: 0.5,
+  speed: 1,
 });
 
 new InfiniteSlider({
@@ -22,5 +22,5 @@ new InfiniteSlider({
   rootElement: document.querySelector<HTMLDivElement>("#col2")!,
   direction: "up",
   gap: 16,
-  speed: 0.5,
+  speed: 1,
 });

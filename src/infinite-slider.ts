@@ -12,7 +12,7 @@ export class InfiniteSlider {
   progress: number;
   maxProgress: number;
   isPaused: boolean = true;
-  private intervalId: number | undefined;
+  private animationFrameId: number | undefined;
 
   constructor(options: Options) {
     this.options = { speed: 1, direction: "up", gap: 16, ...options };
@@ -76,22 +76,22 @@ export class InfiniteSlider {
       throw new Error("updatePosition: moveElement does not exist.");
     }
     this.moveElement.style.transform = `translateY(${this.updatePosition()}px)`;
+    this.animationFrameId = window.requestAnimationFrame(
+      this.animationLoop.bind(this)
+    );
   }
 
   start() {
     if (!this.isPaused) return;
-    this.isPaused = true;
+    this.isPaused = false;
 
-    this.intervalId = setInterval(
-      () => window.requestAnimationFrame(this.animationLoop.bind(this)),
-      5
-    );
+    window.requestAnimationFrame(this.animationLoop.bind(this));
   }
 
   stop() {
     if (this.isPaused) return;
-    this.isPaused = false;
-    clearInterval(this.intervalId!);
-    this.intervalId = undefined;
+    this.isPaused = true;
+    window.cancelAnimationFrame(this.animationFrameId!);
+    this.animationFrameId = undefined;
   }
 }
