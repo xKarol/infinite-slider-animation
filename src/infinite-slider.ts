@@ -3,18 +3,19 @@ type Options = {
   images: string[];
   direction?: "up" | "down";
   gap?: number;
+  speed?: number;
 };
 
 export class InfiniteSlider {
   private options: Required<Options>;
   private moveElement: HTMLDivElement | undefined;
   progress: number;
-  private maxProgress: number;
+  maxProgress: number;
   isPaused: boolean = true;
   private intervalId: number | undefined;
 
   constructor(options: Options) {
-    this.options = { direction: "up", gap: 16, ...options };
+    this.options = { speed: 1, direction: "up", gap: 16, ...options };
     this.progress = 0;
 
     const { rootElement, images, gap, direction } = this.options;
@@ -53,16 +54,20 @@ export class InfiniteSlider {
   }
 
   updatePosition() {
+    const multiplier = this.options.speed;
+
+    this.progress += 1 * multiplier;
+
     switch (this.options.direction) {
       case "up":
-        this.progress--;
-        if (this.progress < -this.maxProgress) this.progress = 0;
+        if (this.progress > this.maxProgress) this.progress = 0;
         break;
       case "down":
-        this.progress++;
         if (this.progress > 0) this.progress = -this.maxProgress;
         break;
     }
+
+    if (this.options.direction === "up") return -this.progress;
     return this.progress;
   }
 
@@ -70,8 +75,7 @@ export class InfiniteSlider {
     if (!this.moveElement) {
       throw new Error("updatePosition: moveElement does not exist.");
     }
-    this.updatePosition();
-    this.moveElement.style.transform = `translateY(${this.progress}px)`;
+    this.moveElement.style.transform = `translateY(${this.updatePosition()}px)`;
   }
 
   start() {
