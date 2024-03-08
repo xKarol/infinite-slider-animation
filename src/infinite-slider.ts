@@ -25,12 +25,18 @@ export class InfiniteSlider {
     images.forEach((url) => this.createImageElement(url));
     images.forEach((url) => this.createImageElement(url));
 
-    if (!this.moveElement) throw new Error("moveElement does not exist.");
-    this.maxProgress = (this.moveElement.clientHeight + gap) / 2;
+    this.maxProgress = this.getMaxProgress();
+
     if (direction === "down") {
       this.progress = -this.maxProgress;
     }
+
     this.start();
+  }
+
+  getMaxProgress() {
+    if (!this.moveElement) throw new Error("moveElement does not exist.");
+    return (this.moveElement.clientHeight + this.options.gap) / 2;
   }
 
   createMoveElement() {
