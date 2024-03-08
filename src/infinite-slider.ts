@@ -10,7 +10,7 @@ export class InfiniteSlider {
   private options: Required<Options>;
   private moveElement: HTMLDivElement | undefined;
   progress: number;
-  maxProgress: number;
+  maxProgress: number = 0;
   isPaused: boolean = true;
   private animationFrameId: number | undefined;
 
@@ -25,13 +25,29 @@ export class InfiniteSlider {
     images.forEach((url) => this.createImageElement(url));
     images.forEach((url) => this.createImageElement(url));
 
-    this.maxProgress = this.getMaxProgress();
+    this.waitForImagesLoad().then(() => {
+      this.maxProgress = this.getMaxProgress();
 
-    if (direction === "down") {
-      this.progress = -this.maxProgress;
-    }
+      if (direction === "down") {
+        this.progress = -this.maxProgress;
+      }
 
-    this.start();
+      this.start();
+    });
+  }
+
+  async waitForImagesLoad() {
+    if (!this.moveElement) throw new Error("moveElement does not exist.");
+    await Promise.all(
+      Array.from(this.moveElement.querySelectorAll("img"))
+        .filter((img) => !img.complete)
+        .map(
+          (img) =>
+            new Promise((resolve) => {
+              img.onload = img.onerror = resolve;
+            })
+        )
+    );
   }
 
   getMaxProgress() {
